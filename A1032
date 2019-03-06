@@ -1,0 +1,40 @@
+#include<cstdio>
+#include<cstring>
+#include<iostream>
+using namespace std;
+
+const int maxn =100010;
+struct NODE{
+    int data;
+    int next;
+    bool flag;
+}node[maxn];
+int main(){
+    for (int i=0;i<maxn;i++){
+        node[i].flag=false;
+    }
+    int a1,a2,n;
+    scanf("%d%d%d",&a1,&a2,&n);
+    int add,next;
+    char data;
+    for(int i =0;i<n;i++){
+        scanf("%d%c%d",&add,&data,&next);
+        node[add].data=data;
+        node[add].next=next;
+    }
+    int p;
+    for(p=a1;p!=-1;p=node[p].next){
+            node[p].flag=true;
+    }
+    for(p=a2;p!=-1;p=node[p].next){
+        if(node[p].flag==true) break;
+    }
+    if(p!=-1){
+        printf("%05d",p);
+    }
+    else{
+        printf("-1\n");
+    }
+
+    return 0;
+}

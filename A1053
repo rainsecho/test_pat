@@ -1,0 +1,68 @@
+#include <cstdio>
+#include <vector>
+#include <algorithm>
+#include <iostream>
+using namespace std;
+const int maxn=110;
+struct node{
+    int weight;
+    vector <int> child;
+}Node[maxn];
+int N,M,S;
+int sum;
+int Path[maxn];
+bool cmp(int a,int b){
+    return Node[a].weight>Node[b].weight;
+}
+void DFS(int index,int numNode,int sum){//index是当前节点，numnode是path的节点个数
+    if(sum>S)return;
+    if(sum==S){
+        if(Node[index].child.size()!=0) return;
+        for(int i=0;i<numNode;i++){
+            printf("%d",Node[Path[i]].weight);
+            if(i<numNode-1) printf(" ");
+            else  printf("\n");
+        }
+        return;
+    }
+    for(std::size_t i=0;i<Node[index].child.size();i++){
+                /*A warning - comparison between
+                signed and unsigned integer expressions [-Wsign-compare]
+                这个警告目的是防止一个负的符号型的数据转化为无符号型时，
+                会产生一个不是我们想要的很大的数据，并且，大家都知道signed
+                和unsigned数据的范围也不同。
+                 这里  for(int  i = 0; i<Node[index].child.size() i++)中，i是signed integer，
+                landmarks.size()是unsigned。所以提示了comparison between signed and unsigned integer。
+                1）将这一句改为    for(vector<Point2f>::size_type i = 0; i < landmarks.size(); i++)
+                这种方法更精确，Point2f是landmarks的数据类型。size_type是由string类类型
+                和vector类类型定义的类型，用以保存任意string对象或vector对象的长度，
+                标准库类型将size_type定义为unsigned类型。
+                2）将这一句改为   for(std::size_t  i = 0; i < landmarks.size(); i++).
+                size_t 类型定义在cstddef头文件中，该文件是C标准库的头文件stddef.h的C++版。
+                它是一个与机器相关的unsigned类型，其大小足以保证存储内存中对象的大小。
+                在用下标访问元素时，vector使用vector::size_type作为下标类型，
+                而数组下标的正确类型则是size_t。*/
+
+        int child=Node[index].child[i];
+        Path[numNode]=child;
+        DFS(child,numNode+1,sum+Node[child].weight);
+    }
+}
+int main(){
+    scanf("%d%d%d",&N,&M,&S);
+    for(int i=0;i<N;i++){
+        scanf("%d",&Node[i].weight);
+    }
+    int id, k,child;
+    for(int i=0;i<M;i++){
+        scanf("%d%d",&id,&k);
+        for(int j=0;j<k;j++){
+            scanf("%d",&child);
+            Node[id].child.push_back(child);
+        }
+         sort(Node[id].child.begin(),Node[id].child.end(),cmp);
+    }
+    Path[0]=0;
+    DFS(0,1,Node[0].weight);
+    return 0;
+}
